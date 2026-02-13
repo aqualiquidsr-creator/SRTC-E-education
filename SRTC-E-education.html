@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บทเรียนการจัดการฐานข้อมูล - วิทยาลัยเทคนิคสุราษฎร์ธานี</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* --- CSS Variables & Reset --- */
+        :root {
+            --primary-blue: #002855;
+            --secondary-blue: #0056b3;
+            --accent-gold: #FFD700;
+            --accent-gray: #e9ecef;
+            --bg-color: #f5f7fa;
+            --text-dark: #212529;
+            --text-gray: #495057;
+            --white: #ffffff;
+            --border-color: #ced4da;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --highlight: #fff3cd;
+            --sidebar-width: 300px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 15px rgba(0, 40, 85, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 8px 0;
+            font-size: 0.85rem;
+            text-align: right;
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--white);
+            padding: 1rem 0;
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .college-logo {
+            width: 75px;
+            height: 75px;
+            border-radius: 0;
+            object-fit: cover;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .logo-box {
+            width: 75px;
+            height: 75px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .brand-info h1 {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .brand-info h2 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .brand-info span {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            margin-top: 2px;
+            font-weight: 300;
+        }
+
+        .navbar {
+            background-color: var(--white);
+            border-bottom: 3px solid var(--primary-blue);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2px;
+            background: var(--accent-gray);
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-dark);
+            padding: 15px 28px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: var(--white);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* Main layout with sidebar */
+        .main-layout {
+            display: flex;
+            gap: 30px;
+            padding: 40px 0;
+            flex: 1;
+        }
+
+        /* Sidebar */
+        .lesson-sidebar {
+            width: var(--sidebar-width);
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            height: fit-content;
+            position: sticky;
+            top: 80px;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--accent-gold);
+        }
+
+        .lesson-list {
+            list-style: none;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+
+        .lesson-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .lesson-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: var(--text-dark);
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .lesson-link:hover {
+            background: var(--accent-gray);
+            padding-left: 25px;
+        }
+
+        .lesson-link.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .lesson-badge {
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 0;
+            font-size: 0.75rem;
+            margin-left: auto;
+            font-weight: 600;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--primary-blue);
+            padding-bottom: 10px;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+            padding-right: 25px;
+            background-color: var(--bg-color);
+            margin-bottom: -13px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: 40px auto;
+            padding: 30px;
+            border: 2px solid var(--primary-blue);
+            max-width: 500px;
+            position: relative;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .close {
+            color: var(--text-gray);
+            float: right;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close:hover {
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-blue);
+            outline: none;
+        }
+
+        /* Account Section */
+        .account-info {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            box-shadow: var(--shadow);
+        }
+
+        .account-info.show {
+            display: block;
+        }
+
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .student-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 15px;
+            background: var(--bg-color);
+            padding: 20px;
+        }
+
+        .detail-item {
+            font-weight: 500;
+        }
+
+        .detail-item span {
+            display: block;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .progress-section {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 15px;
+            background: var(--accent-gray);
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            padding: 35px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .lesson-text {
+            margin: 25px 0;
+            line-height: 1.8;
+            color: var(--text-dark);
+            white-space: pre-line;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 25px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .highlight-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+        }
+
+        .highlight-btn {
+            padding: 8px 15px;
+            background: var(--highlight);
+            border: 1px solid var(--warning);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .highlight-btn:hover {
+            background: #ffe69c;
+        }
+
+        .highlighted-text {
+            background-color: var(--highlight);
+            padding: 2px 0;
+            cursor: pointer;
+        }
+
+        .lesson-image {
+            max-width: 100%;
+            margin: 20px 0;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .video-item {
+            border: 2px solid var(--primary-blue);
+            padding: 15px;
+            background: var(--bg-color);
+        }
+
+        .video-player {
+            width: 100%;
+            height: 160px;
+            border: none;
+        }
+
+        .video-title {
+            margin-top: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Quiz Styles */
+        .quiz-question {
+            margin: 25px 0;
+            padding: 20px;
+            background: var(--bg-color);
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        .quiz-question p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .quiz-options {
+            margin-top: 10px;
+        }
+
+        .quiz-option {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            background: var(--accent-gray);
+            border-color: var(--primary-blue);
+        }
+
+        .quiz-option input {
+            margin-right: 12px;
+        }
+
+        .quiz-feedback {
+            margin: 10px 0;
+            padding: 15px;
+            border-left: 5px solid;
+        }
+
+        .feedback-correct {
+            background: #d4edda;
+            border-left-color: var(--success);
+        }
+
+        .feedback-incorrect {
+            background: #f8d7da;
+            border-left-color: var(--danger);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 30px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .btn:hover {
+            background: var(--secondary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-success {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--text-dark);
+            border-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .score-display {
+            font-size: 1.8rem;
+            color: var(--primary-blue);
+            margin: 20px 0;
+            padding: 25px;
+            background: var(--accent-gray);
+            text-align: center;
+            font-weight: 700;
+            border: 2px solid var(--primary-blue);
+        }
+
+        /* Course Grid */
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .course-card {
+            background: var(--white);
+            border: 2px solid var(--primary-blue);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card:hover {
+            border-color: var(--secondary-blue);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
+        }
+
+        .card-top {
+            background-color: var(--primary-blue);
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--accent-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 25px 20px;
+            flex: 1;
+        }
+
+        .card-content h3 {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .card-content p {
+            font-size: 0.95rem;
+            color: var(--text-gray);
+        }
+
+        .card-action {
+            padding: 0 20px 25px 20px;
+        }
+
+        .btn-start {
+            display: inline-block;
+            width: 100%;
+            background-color: var(--white);
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 12px 0;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-start:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .badge-completed {
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        .badge-failed {
+            background: var(--danger);
+            color: white;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        footer {
+            background-color: var(--primary-blue);
+            color: rgba(255,255,255,0.9);
+            padding: 3rem 0;
+            margin-top: auto;
+            border-top: 5px solid var(--accent-gold);
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            .lesson-sidebar {
+                width: 100%;
+                position: static;
+            }
+            .student-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links {
+                flex-direction: column;
+            }
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            .student-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="container">
+            <span><i class="fas fa-graduation-cap"></i> ระบบสารสนเทศเพื่อการจัดการเรียนรู้ (LMS) | ปีการศึกษา 2567</span>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-wrapper">
+                    <img src="https://scontent.furt2-1.fna.fbcdn.net/v/t39.30808-6/223303958_665537047696775_5725965526684764441_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeHYdDp67RfF6Yo008Da8znibSDAaVG9sWptIMBpUb2xaskuSs8Dg-GqxsRQzyU0pPy_Mf3g1YP_1vszniK1R7r4&_nc_ohc=iLPCoGJ_o9MQ7kNvwHGpOes&_nc_oc=Admc76_VFpmfz4NLFaNjJqUwuNqOFeHLFGbaDxOaPCDS26LE8Iplmx8f5_Ma6B3ikqc&_nc_zt=23&_nc_ht=scontent.furt2-1.fna&_nc_gid=_7VTy5MeMVsHd6pdxOVJJA&oh=00_Aft_Z7wnoyuXAZrD0jvFHcN5NWBnB7FQCgJk7z2pfJwZRA&oe=69950E7A" 
+                         alt="วิทยาลัยเทคนิคสุราษฎร์ธานี" 
+                         class="college-logo"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                         style="display: block;">
+                    <div class="logo-box" style="display: none;">ST</div>
+                </div>
+                <div class="brand-info">
+                    <h1>บทเรียนการจัดการฐานข้อมูล</h1>
+                    <h2>แผนกเทคโนโลยีสารสนเทศ</h2>
+                    <span>วิทยาลัยเทคนิคสุราษฎร์ธานี</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-links">
+                <a class="nav-item active" onclick="showMainContent('lessons')"><i class="fas fa-book-open"></i> บทเรียน</a>
+                <a class="nav-item" onclick="showMainContent('quiz')"><i class="fas fa-edit"></i> แบบทดสอบ</a>
+                <a class="nav-item" onclick="showMainContent('scores')"><i class="fas fa-chart-bar"></i> ผลการเรียน</a>
+                <a class="nav-item" onclick="showAccountModal()"><i class="fas fa-user-tie"></i> บัญชีผู้ใช้</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Account Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('accountModal')">&times;</span>
+            <h2 style="color: var(--primary-blue); margin-bottom: 20px;">เข้าสู่ระบบ / สมัครสมาชิก</h2>
+            <div style="margin: 20px 0;">
+                <h3 style="color: var(--secondary-blue);">สำหรับนักศึกษาวิทยาลัยเทคนิคสุราษฎร์ธานี</h3>
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล</label>
+                    <input type="text" id="fullName" placeholder="ชื่อ-นามสกุล">
+                </div>
+                <div class="form-group">
+                    <label>รหัสบัตรประชาชน 13 หลัก</label>
+                    <input type="text" id="citizenId" placeholder="รหัสบัตรประชาชน 13 หลัก" maxlength="13">
+                </div>
+                <div class="form-group">
+                    <label>วันเกิด</label>
+                    <input type="date" id="birthDate">
+                </div>
+                <div class="form-group">
+                    <label>ชั้นปี</label>
+                    <select id="educationLevel">
+                        <option value="ปวช1">ปวช. ปีที่ 1</option>
+                        <option value="ปวช2">ปวช. ปีที่ 2</option>
+                        <option value="ปวช3">ปวช. ปีที่ 3</option>
+                        <option value="ปวส1">ปวส. ปีที่ 1</option>
+                        <option value="ปวส2">ปวส. ปีที่ 2</option>
+                        <option value="ปริญญาตรี">ปริญญาตรี</option>
+                    </select>
+                </div>
+                <div style="margin: 20px 0; display: flex; gap: 10px;">
+                    <button class="btn" onclick="login()"><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ</button>
+                    <button class="btn btn-success" onclick="register()"><i class="fas fa-user-plus"></i> สมัครสมาชิก</button>
+                </div>
+                <div id="loginMessage" style="color: var(--danger); font-weight: 500;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Info Display -->
+    <div id="accountInfo" class="container account-info">
+        <div class="account-header">
+            <h3><i class="fas fa-user-graduate"></i> ข้อมูลนักศึกษา: <span id="studentName"></span> <span class="badge-completed" id="studentStatus"></span></h3>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button>
+        </div>
+        <div class="student-details">
+            <div class="detail-item">รหัสประชาชน: <span id="displayCitizenId"></span></div>
+            <div class="detail-item">วันเกิด: <span id="displayBirthDate"></span></div>
+            <div class="detail-item">ชั้นปี: <span id="displayEducationLevel"></span></div>
+            <div class="detail-item">คะแนนรวม: <span id="totalScore">0</span> / 150</div>
+        </div>
+        <div class="progress-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <p><i class="fas fa-chart-line"></i> ความคืบหน้า: เรียนไปแล้ว <span id="completedLessons">0</span> จาก 15 บทเรียน</p>
+        </div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Lesson Sidebar -->
+        <aside class="lesson-sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-list"></i>
+                <span>บทเรียนทั้งหมด (15)</span>
+            </div>
+            <ul class="lesson-list" id="lessonList">
+                <!-- Generated by JS -->
+            </ul>
+            <div style="padding: 15px;">
+                <button class="btn" style="width: 100%;" onclick="showAllLessons()">
+                    <i class="fas fa-th-large"></i> ดูบทเรียนทั้งหมด
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dynamic Content Sections -->
+            <div id="lessonsSection">
+                <div class="section-header">
+                    <h2><i class="fas fa-database"></i> บทเรียนทั้งหมด</h2>
+                </div>
+                <div class="course-grid" id="lessonGrid">
+                    <!-- Lessons will be generated by JavaScript -->
+                </div>
+            </div>
+
+            <div id="quizSection" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-pencil-alt"></i> แบบทดสอบประจำบทเรียน</h2>
+                </div>
+                <div id="quizContainer"></div>
+            </div>
+
+            <div id="scoresSection" style="display: none;">
+                <div class="section-header">
+                    <h2><i class="fas fa-star"></i> ผลการเรียนและคะแนนสะสม</h2>
+                </div>
+                <div id="scoresContainer"></div>
+            </div>
+
+            <!-- Lesson Content Display (Single Lesson View) -->
+            <div id="lessonContent" class="lesson-content" style="display: none;"></div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <p style="font-weight: 600; font-size: 1.2rem;">วิทยาลัยเทคนิคสุราษฎร์ธานี</p>
+            <p>Surat Thani Technical College</p>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;"><i class="far fa-copyright"></i> 2024 แผนกเทคโนโลยีสารสนเทศ | Information Technology Department</p>
+        </div>
+    </footer>
+
+    <script>
+        // ========== DATA STORAGE ==========
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let lessonProgress = JSON.parse(localStorage.getItem('lessonProgress')) || {};
+        let quizScores = JSON.parse(localStorage.getItem('quizScores')) || {};
+        let quizAnswers = JSON.parse(localStorage.getItem('quizAnswers')) || {};
+        let quizResults = JSON.parse(localStorage.getItem('quizResults')) || {};
+
+        // Generate 3000 students if not exist
+        if (students.length === 0) {
+            for (let i = 1; i <= 3000; i++) {
+                let citizenId = (1000000000000 + i).toString().padStart(13, '0');
+                let birthDate = `199${i % 10}-0${(i % 9) + 1}-15`;
+                students.push({
+                    citizenId: citizenId,
+                    birthDate: birthDate,
+                    name: `นักศึกษานามสมมติ ${i}`,
+                    educationLevel: ['ปวช1', 'ปวช2', 'ปวช3', 'ปวส1', 'ปวส2', 'ปริญญาตรี'][i % 6],
+                    registered: true
+                });
+            }
+            localStorage.setItem('students', JSON.stringify(students));
+        }
+
+        // ========== LESSON DATA ==========
+        const lessons = [
+            {
+                id: 1,
+                title: "ความรู้พื้นฐานฐานข้อมูล",
+                description: "นิยาม ความสำคัญ และองค์ประกอบของระบบฐานข้อมูล",
+                content: `บทที่ 1: ความรู้พื้นฐานฐานข้อมูล
+
+1.1 ความหมายของฐานข้อมูล
+ฐานข้อมูล (Database) หมายถึง กลุ่มของข้อมูลที่มีความสัมพันธ์กัน นำมาจัดเก็บอย่างเป็นระบบ เพื่อให้สามารถเรียกใช้ข้อมูลร่วมกันได้อย่างรวดเร็วและมีประสิทธิภาพ ตัวอย่างเช่น ระบบทะเบียนนักศึกษา ระบบห้องสมุด ระบบธนาคาร
+
+1.2 องค์ประกอบของระบบฐานข้อมูล
+1. ข้อมูล (Data): ข้อเท็จจริงต่าง ๆ ที่เก็บในฐานข้อมูล
+2. ฮาร์ดแวร์ (Hardware): อุปกรณ์ที่ใช้จัดเก็บ เช่น เครื่องแม่ข่าย
+3. ซอฟต์แวร์ (Software): ระบบจัดการฐานข้อมูล (DBMS)
+4. ผู้ใช้ (User): แบ่งเป็น ผู้ใช้ทั่วไป โปรแกรมเมอร์ และผู้ดูแลฐานข้อมูล
+
+1.3 ระบบจัดการฐานข้อมูล (DBMS)
+DBMS คือซอฟต์แวร์ที่ทำหน้าที่จัดการฐานข้อมูล เช่น MySQL, Oracle, Microsoft SQL Server ช่วยให้ผู้ใช้สามารถเพิ่ม ลบ แก้ไข และค้นหาข้อมูลได้โดยไม่ต้องยุ่งยากกับโครงสร้างจริง
+
+1.4 ข้อดีของฐานข้อมูล
+- ลดความซ้ำซ้อนของข้อมูล
+- รักษาความถูกต้องของข้อมูล
+- ใช้ข้อมูลร่วมกันได้
+- รักษาความปลอดภัยของข้อมูล
+
+1.5 ข้อเสียของฐานข้อมูล
+- ต้นทุนสูง
+- ต้องการผู้เชี่ยวชาญ
+- ระบบซับซ้อน
+
+สรุป: ฐานข้อมูลเป็นหัวใจสำคัญของระบบสารสนเทศยุคใหม่ การเข้าใจพื้นฐานจะช่วยให้เราสามารถออกแบบและใช้งานฐานข้อมูลได้อย่างมีประสิทธิภาพ`,
+                image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=500",
+                videos: [
+                    { id: "dQw4w9WgXcQ", title: "ความรู้พื้นฐานฐานข้อมูล ตอนที่ 1" },
+                    { id: "dQw4w9WgXcQ", title: "ความรู้พื้นฐานฐานข้อมูล ตอนที่ 2" },
+                    { id: "dQw4w9WgXcQ", title: "ความรู้พื้นฐานฐานข้อมูล ตอนที่ 3" }
+                ]
+            },
+            {
+                id: 2,
+                title: "สถาปัตยกรรมฐานข้อมูล",
+                description: "ระดับของข้อมูล External, Conceptual และ Internal Level",
+                content: `บทที่ 2: สถาปัตยกรรมฐานข้อมูล
+
+2.1 สถาปัตยกรรม 3 ระดับ (ANSI/SPARC)
+สถาปัตยกรรมฐานข้อมูลถูกออกแบบเป็น 3 ระดับเพื่อแยกมุมมองผู้ใช้ออกจากการจัดเก็บจริง
+
+2.2 External Level (ระดับภายนอก)
+เป็นมุมมองของผู้ใช้แต่ละคน ผู้ใช้จะเห็นเฉพาะข้อมูลที่เกี่ยวข้องกับตนเองเท่านั้น เช่น นักเรียนเห็นเฉพาะคะแนนของตนเอง อาจารย์เห็นคะแนนทั้งชั้น
+
+2.3 Conceptual Level (ระดับแนวคิด)
+เป็นโครงสร้างรวมของฐานข้อมูลทั้งหมด บอกรายละเอียดว่ามีข้อมูลอะไรบ้าง ความสัมพันธ์เป็นอย่างไร ไม่สนใจวิธีการจัดเก็บจริง
+
+2.4 Internal Level (ระดับภายใน)
+เป็นระดับการจัดเก็บจริงบนสื่อบันทึก เช่น การจัดเก็บเป็นไฟล์ การจัดเรียงข้อมูลบนฮาร์ดดิสก์ การบีบอัดข้อมูล
+
+2.5 ความเป็นอิสระของข้อมูล
+- Logical Data Independence: เปลี่ยนโครงสร้าง Conceptual โดยไม่กระทบ External
+- Physical Data Independence: เปลี่ยนโครงสร้าง Internal โดยไม่กระทบ Conceptual
+
+2.6 แผนภาพสถาปัตยกรรม
+External Level -> Conceptual Level -> Internal Level
+แต่ละระดับมีการแมป (Mapping) เชื่อมต่อกัน
+
+สรุป: การแบ่งระดับช่วยให้ระบบฐานข้อมูลมีความยืดหยุ่นและปรับเปลี่ยนได้ง่าย`,
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500",
+                videos: [
+                    { id: "dQw4w9WgXcQ", title: "สถาปัตยกรรมฐานข้อมูล ตอนที่ 1" },
+                    { id: "dQw4w9WgXcQ", title: "สถาปัตยกรรมฐานข้อมูล ตอนที่ 2" },
+                    { id: "dQw4w9WgXcQ", title: "สถาปัตยกรรมฐานข้อมูล ตอนที่ 3" }
+                ]
+            },
+            {
+                id: 3,
+                title: "แบบจำลองข้อมูล",
+                description: "Hierarchical, Network และ Relational Model",
+                content: `บทที่ 3: แบบจำลองข้อมูล (Data Model)
+
+3.1 แบบจำลองลำดับชั้น (Hierarchical Model)
+ข้อมูลถูกจัดเก็บเป็นโครงสร้างต้นไม้ แต่ละโหนดมีความสัมพันธ์แบบพ่อ-ลูก เช่น ระบบแฟ้มเอกสาร ข้อดี: ค้นหาตามเส้นทางได้เร็ว ข้อเสีย: เปลี่ยนแปลงโครงสร้างยาก
+
+3.2 แบบจำลองเครือข่าย (Network Model)
+พัฒนาต่อยอดจาก Hierarchical Model โดยให้แต่ละโหนดเชื่อมต่อกันได้หลายทาง เหมาะกับข้อมูลที่มีความสัมพันธ์ซับซ้อน เช่น ข้อมูลนักศึกษาที่ลงทะเบียนหลายวิชา
+
+3.3 แบบจำลองเชิงสัมพันธ์ (Relational Model)
+เป็นแบบจำลองที่นิยมใช้มากที่สุดในปัจจุบัน ข้อมูลถูกเก็บในรูปแบบตาราง (Relation) ประกอบด้วย:
+- แถว (Tuple/Record) แทนข้อมูล 1 รายการ
+- คอลัมน์ (Attribute/Field) แทนคุณสมบัติของข้อมูล
+- คีย์หลัก (Primary Key) ใช้ระบุแถวไม่ซ้ำกัน
+
+3.4 แบบจำลองเชิงวัตถุ (Object-Oriented Model)
+ผสมผสานแนวคิดเชิงวัตถุเข้ากับฐานข้อมูล จัดเก็บข้อมูลในรูปของออบเจ็กต์ เหมาะกับงานที่มีโครงสร้างซับซ้อน เช่น มัลติมีเดีย
+
+3.5 การเลือกใช้แบบจำลอง
+ขึ้นอยู่กับลักษณะงานและความเหมาะสม เช่น งานธุรกิจทั่วไปนิยม Relational Model งานที่มีโครงสร้างซับซ้อนอาจใช้ Object-Oriented
+
+สรุป: แบบจำลองข้อมูลเป็นเครื่องมือสำคัญในการออกแบบฐานข้อมูล`,
+                image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500",
+                videos: [
+                    { id: "dQw4w9WgXcQ", title: "แบบจำลองข้อมูล ตอนที่ 1" },
+                    { id: "dQw4w9WgXcQ", title: "แบบจำลองข้อมูล ตอนที่ 2" },
+                    { id: "dQw4w9WgXcQ", title: "แบบจำลองข้อมูล ตอนที่ 3" }
+                ]
+            },
+            {
+                id: 4,
+                title: "Entity-Relationship Model",
+                description: "การเขียน ER-Diagram, Entity และ Relationship",
+                content: `บทที่ 4: Entity-Relationship Model
+
+4.1 ความรู้เบื้องต้นเกี่ยวกับ ER Model
+ER Model เป็นแบบจำลองเชิงแนวคิดที่ใช้ในการออกแบบฐานข้อมูล โดยแสดงโครงสร้างในรูปแบบแผนภาพ ER-Diagram
+
+4.2 ส่วนประกอบหลักของ ER Model
+- Entity (เอนทิตี): สิ่งที่เราสนใจจัดเก็บข้อมูล เช่น นักศึกษา, รายวิชา
+- Attribute (คุณลักษณะ): คุณสมบัติของเอนทิตี เช่น รหัสนักศึกษา, ชื่อ
+- Relationship (ความสัมพันธ์): ความสัมพันธ์ระหว่างเอนทิตี เช่น นักศึกษา ลงทะเบียน วิชา
+
+4.3 ประเภทของ Attribute
+- Simple Attribute: ค่าเดียว เช่น อายุ
+- Composite Attribute: ประกอบด้วยหลายส่วน เช่น ที่อยู่
+- Derived Attribute: คำนวณได้ เช่น อายุจากวันเกิด
+- Multi-valued Attribute: หลายค่า เช่น เบอร์โทรศัพท์
+
+4.4 ประเภทของ Relationship
+- One-to-One (1:1): หนึ่งต่อหนึ่ง
+- One-to-Many (1:N): หนึ่งต่อหลาย
+- Many-to-Many (M:N): หลายต่อหลาย
+
+4.5 การเขียน ER-Diagram
+ใช้สัญลักษณ์:
+- สี่เหลี่ยม: Entity
+- วงรี: Attribute
+- ขนมเปียกปูน: Relationship
+- เส้นเชื่อม: ความสัมพันธ์
+
+4.6 ตัวอย่าง ER-Diagram
+ระบบลงทะเบียน: นักศึกษา (รหัสนักศึกษา, ชื่อ) ---- ลงทะเบียน ---- วิชา (รหัสวิชา, ชื่อวิชา)
+
+สรุป: ER Model เป็นเครื่องมือสำคัญสำหรับนักออกแบบฐานข้อมูล`,
+                image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=500",
+                videos: [
+                    { id: "dQw4w9WgXcQ", title: "ER Model ตอนที่ 1" },
+                    { id: "dQw4w9WgXcQ", title: "ER Model ตอนที่ 2" },
+                    { id: "dQw4w9WgXcQ", title: "ER Model ตอนที่ 3" }
+                ]
+            }
+        ];
+
+        // Quiz data for each lesson
+        const lessonQuizzes = {
+            1: {
+                questions: [
+                    { text: "ฐานข้อมูลคืออะไร?", options: ["กลุ่มของไฟล์", "กลุ่มของข้อมูลที่มีความสัมพันธ์", "โปรแกรมจัดการข้อมูล"], correct: 1, explanation: "ฐานข้อมูลคือกลุ่มของข้อมูลที่มีความสัมพันธ์กัน นำมาจัดเก็บอย่างเป็นระบบ" },
+                    { text: "ข้อใดไม่ใช่องค์ประกอบของระบบฐานข้อมูล", options: ["ข้อมูล", "ฮาร์ดแวร์", "ระบบปฏิบัติการ"], correct: 2, explanation: "ระบบปฏิบัติการเป็นซอฟต์แวร์พื้นฐาน ไม่ใช่องค์ประกอบเฉพาะของฐานข้อมูล" },
+                    { text: "DBMS คืออะไร?", options: ["ระบบจัดการฐานข้อมูล", "โปรแกรมคำนวณ", "ภาษาคอมพิวเตอร์"], correct: 0, explanation: "DBMS ย่อจาก Database Management System" },
+                    { text: "ข้อใดเป็นข้อดีของฐานข้อมูล", options: ["ลดความซ้ำซ้อน", "เพิ่มพื้นที่จัดเก็บ", "ยุ่งยากซับซ้อน"], correct: 0, explanation: "ฐานข้อมูลช่วยลดความซ้ำซ้อนของข้อมูล" },
+                    { text: "ตัวอย่าง DBMS คือข้อใด", options: ["MySQL", "Microsoft Word", "Photoshop"], correct: 0, explanation: "MySQL เป็นระบบจัดการฐานข้อมูล ส่วน Word และ Photoshop เป็นโปรแกรมอื่น" }
+                ]
+            },
+            2: {
+                questions: [
+                    { text: "สถาปัตยกรรม ANSI/SPARC มีกี่ระดับ?", options: ["2 ระดับ", "3 ระดับ", "4 ระดับ"], correct: 1, explanation: "ANSI/SPARC แบ่งเป็น 3 ระดับ: External, Conceptual, Internal" },
+                    { text: "ระดับใดเป็นมุมมองของผู้ใช้?", options: ["External", "Conceptual", "Internal"], correct: 0, explanation: "External Level เป็นระดับที่ผู้ใช้มองเห็นข้อมูล" },
+                    { text: "Logical Data Independence เกี่ยวข้องกับระดับใด?", options: ["External และ Conceptual", "Conceptual และ Internal", "External และ Internal"], correct: 0, explanation: "Logical Data Independence ทำให้เปลี่ยน Conceptual โดยไม่กระทบ External" },
+                    { text: "Internal Level เกี่ยวข้องกับอะไร?", options: ["การจัดเก็บจริง", "มุมมองผู้ใช้", "โครงสร้างรวม"], correct: 0, explanation: "Internal Level เกี่ยวข้องกับการจัดเก็บข้อมูลจริงบนสื่อ" },
+                    { text: "Conceptual Level คือระดับใด?", options: ["ระดับแนวคิด", "ระดับกายภาพ", "ระดับภายนอก"], correct: 0, explanation: "Conceptual Level คือระดับแนวคิด โครงสร้างรวมของฐานข้อมูล" }
+                ]
+            },
+            3: {
+                questions: [
+                    { text: "แบบจำลองใดมีโครงสร้างเป็นต้นไม้?", options: ["Hierarchical", "Network", "Relational"], correct: 0, explanation: "Hierarchical Model มีโครงสร้างแบบต้นไม้" },
+                    { text: "แบบจำลองใดนิยมใช้มากที่สุด?", options: ["Hierarchical", "Network", "Relational"], correct: 2, explanation: "Relational Model เป็นที่นิยมมากที่สุดในปัจจุบัน" },
+                    { text: "Relational Model เก็บข้อมูลในรูปแบบใด?", options: ["ตาราง", "ต้นไม้", "กราฟ"], correct: 0, explanation: "Relational Model เก็บข้อมูลในรูปแบบตาราง" },
+                    { text: "Network Model พัฒนามาจากแบบจำลองใด?", options: ["Hierarchical", "Relational", "Object"], correct: 0, explanation: "Network Model พัฒนามาจาก Hierarchical Model" },
+                    { text: "Object-Oriented Model เหมาะกับงานประเภทใด?", options: ["มัลติมีเดีย", "งานคำนวณ", "งานข้อความ"], correct: 0, explanation: "Object-Oriented Model เหมาะกับงานมัลติมีเดียและข้อมูลซับซ้อน" }
+                ]
+            }
+        };
+
+        // ========== UI FUNCTIONS ==========
+        function showMainContent(section) {
+            document.getElementById('lessonsSection').style.display = section === 'lessons' ? 'block' : 'none';
+            document.getElementById('quizSection').style.display = section === 'quiz' ? 'block' : 'none';
+            document.getElementById('scoresSection').style.display = section === 'scores' ? 'block' : 'none';
+            document.getElementById('lessonContent').style.display = 'none';
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (section === 'quiz') renderQuiz();
+            if (section === 'scores') renderScores();
+        }
+
+        function showAccountModal() {
+            document.getElementById('accountModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showAllLessons() {
+            document.getElementById('lessonsSection').style.display = 'block';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('scoresSection').style.display = 'none';
+            document.getElementById('lessonContent').style.display = 'none';
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector('.nav-item[onclick="showMainContent(\'lessons\')"]').classList.add('active');
+        }
+
+        // ========== HIGHLIGHT FUNCTION ==========
+        function enableHighlight() {
+            let selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                let range = selection.getRangeAt(0);
+                let span = document.createElement('span');
+                span.className = 'highlighted-text';
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+                
+                // Add click handler to remove highlight
+                span.onclick = function() {
+                    let parent = this.parentNode;
+                    while (this.firstChild) {
+                        parent.insertBefore(this.firstChild, this);
+                    }
+                    parent.removeChild(this);
+                };
+            }
+        }
+
+        // ========== AUTH FUNCTIONS ==========
+        function register() {
+            let fullName = document.getElementById('fullName').value;
+            let citizenId = document.getElementById('citizenId').value;
+            let birthDate = document.getElementById('birthDate').value;
+            let educationLevel = document.getElementById('educationLevel').value;
+            
+            if (!fullName || !citizenId || !birthDate || !educationLevel) {
+                document.getElementById('loginMessage').innerText = 'กรุณากรอกข้อมูลให้ครบ';
+                return;
+            }
+            
+            if (citizenId.length !== 13 || isNaN(citizenId)) {
+                document.getElementById('loginMessage').innerText = 'รหัสบัตรประชาชนต้องเป็นตัวเลข 13 หลัก';
+                return;
+            }
+            
+            let student = students.find(s => s.citizenId === citizenId);
+            if (student) {
+                document.getElementById('loginMessage').innerText = 'มีบัญชีนี้ในระบบแล้ว';
+                return;
+            }
+            
+            students.push({
+                citizenId: citizenId,
+                birthDate: birthDate,
+                name: fullName,
+                educationLevel: educationLevel,
+                registered: true
+            });
+            localStorage.setItem('students', JSON.stringify(students));
+            
+            currentUser = { citizenId, birthDate };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            closeModal('accountModal');
+            updateAccountDisplay();
+            alert('สมัครสมาชิกสำเร็จ');
+        }
+
+        function login() {
+            let citizenId = document.getElementById('citizenId').value;
+            let birthDate = document.getElementById('birthDate').value;
+            
+            let student = students.find(s => s.citizenId === citizenId && s.birthDate === birthDate);
+            if (student) {
+                currentUser = { citizenId, birthDate };
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                closeModal('accountModal');
+                updateAccountDisplay();
+                renderLessons();
+                renderLessonList();
+            } else {
+                document.getElementById('loginMessage').innerText = 'ไม่พบข้อมูลหรือข้อมูลไม่ถูกต้อง';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('accountInfo').classList.remove('show');
+            alert('ออกจากระบบสำเร็จ');
+            showMainContent('lessons');
+        }
+
+        function updateAccountDisplay() {
+            if (currentUser) {
+                let student = students.find(s => s.citizenId === currentUser.citizenId);
+                if (student) {
+                    document.getElementById('studentName').innerText = student.name;
+                    document.getElementById('displayCitizenId').innerText = student.citizenId;
+                    document.getElementById('displayBirthDate').innerText = student.birthDate;
+                    document.getElementById('displayEducationLevel').innerText = student.educationLevel || 'ไม่ระบุ';
+                    document.getElementById('studentStatus').innerText = 'ออนไลน์';
+                    document.getElementById('accountInfo').classList.add('show');
+                    
+                    // Update progress
+                    let completed = Object.values(lessonProgress).filter(v => v === true).length;
+                    document.getElementById('completedLessons').innerText = completed;
+                    
+                    let totalScore = Object.values(quizScores).reduce((a, b) => a + b, 0);
+                    document.getElementById('totalScore').innerText = totalScore;
+                    
+                    let progressPercent = (completed / 15) * 100;
+                    document.getElementById('progressFill').style.width = progressPercent + '%';
+                }
+            }
+        }
+
+        // ========== LESSON FUNCTIONS ==========
+        function renderLessons() {
+            let grid = document.getElementById('lessonGrid');
+            grid.innerHTML = '';
+            
+            lessons.forEach(lesson => {
+                let completed = lessonProgress[lesson.id] ? true : false;
+                let score = quizScores[lesson.id] || 0;
+                let scoreBadge = score < 5 && score > 0 ? '<span class="badge-failed">คะแนนต่ำ</span>' : '';
+                
+                grid.innerHTML += `
+                    <div class="course-card">
+                        <div class="card-top">
+                            <span>UNIT ${lesson.id.toString().padStart(2, '0')}</span>
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="card-content">
+                            <h3>${lesson.title} ${completed ? '<span class="badge-completed">เรียนแล้ว</span>' : ''} ${scoreBadge}</h3>
+                            <p>${lesson.description}</p>
+                        </div>
+                        <div class="card-action">
+                            <button class="btn-start" onclick="openLesson(${lesson.id})"><i class="fas fa-play-circle"></i> เข้าสู่บทเรียน</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderLessonList() {
+            let list = document.getElementById('lessonList');
+            list.innerHTML = '';
+            
+            lessons.forEach(lesson => {
+                let completed = lessonProgress[lesson.id] ? true : false;
+                list.innerHTML += `
+                    <li class="lesson-item">
+                        <a class="lesson-link" onclick="openLesson(${lesson.id})">
+                            <i class="fas ${completed ? 'fa-check-circle' : 'fa-book'}"></i>
+                            <span>บทที่ ${lesson.id}: ${lesson.title.substring(0, 20)}...</span>
+                            ${completed ? '<span class="lesson-badge">✓ เรียนแล้ว</span>' : ''}
+                        </a>
+                    </li>
+                `;
+            });
+        }
+
+        function openLesson(lessonId) {
+            let lesson = lessons.find(l => l.id === lessonId);
+            let contentDiv = document.getElementById('lessonContent');
+            
+            let videosHtml = '';
+            lesson.videos.forEach((video, index) => {
+                videosHtml += `
+                    <div class="video-item">
+                        <iframe class="video-player" src="https://www.youtube.com/embed/${video.id}" frameborder="0" allowfullscreen></iframe>
+                        <div class="video-title">${video.title}</div>
+                    </div>
+                `;
+            });
+            
+            contentDiv.innerHTML = `
+                <h2 style="color: var(--primary-blue);">${lesson.title}</h2>
+                <div class="highlight-toolbar">
+                    <button class="highlight-btn" onclick="enableHighlight()"><i class="fas fa-highlighter"></i> ไฮไลท์ข้อความ (คลิกเพื่อเปิด/ปิด)</button>
+                </div>
+                <img src="${lesson.image}" alt="${lesson.title}" class="lesson-image">
+                <div class="lesson-text" id="lessonText">
+                    ${lesson.content}
+                </div>
+                <h3 style="color: var(--secondary-blue);"><i class="fas fa-video"></i> วีดีโอประกอบบทเรียน</h3>
+                <div class="video-grid">
+                    ${videosHtml}
+                </div>
+                <div style="margin-top: 30px;">
+                    <button class="btn" onclick="markLessonComplete(${lessonId})"><i class="fas fa-check-circle"></i> เรียนจบบทนี้</button>
+                    <button class="btn btn-success" onclick="takeQuiz(${lessonId})"><i class="fas fa-pencil-alt"></i> ทำแบบทดสอบ</button>
+                    <button class="btn btn-warning" onclick="showAllLessons()"><i class="fas fa-arrow-left"></i> กลับไปหน้าบทเรียน</button>
+                </div>
+            `;
+            
+            // Hide other sections, show lesson content
+            document.getElementById('lessonsSection').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('scoresSection').style.display = 'none';
+            contentDiv.style.display = 'block';
+            
+            window.scrollTo(0, contentDiv.offsetTop);
+        }
+
+        function markLessonComplete(lessonId) {
+            if (!currentUser) {
+                alert('กรุณาเข้าสู่ระบบก่อน');
+                return;
+            }
+            lessonProgress[lessonId] = true;
+            localStorage.setItem('lessonProgress', JSON.stringify(lessonProgress));
+            updateAccountDisplay();
+            renderLessons();
+            renderLessonList();
+            
+            // Auto redirect to quiz
+            if (confirm('เรียนจบบทเรียนแล้ว ต้องการทำแบบทดสอบท้ายบทเลยหรือไม่?')) {
+                takeQuiz(lessonId);
+            }
+        }
+
+        // ========== QUIZ FUNCTIONS ==========
+        function renderQuiz() {
+            let container = document.getElementById('quizContainer');
+            let html = '<h3>เลือกบทเรียนที่ต้องการทำแบบทดสอบ</h3>';
+            
+            lessons.forEach(lesson => {
+                let score = quizScores[lesson.id] || 0;
+                let answered = quizAnswers[lesson.id] ? true : false;
+                let statusClass = score < 5 && score > 0 ? 'badge-failed' : 'badge-completed';
+                html += `
+                    <div style="margin: 15px 0; padding: 20px; background: white; border: 2px solid var(--primary-blue); display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="font-size: 1.1rem;">${lesson.title}</strong>
+                            ${score > 0 ? `<span class="${statusClass}" style="margin-left: 15px;">ได้ ${score}/10 คะแนน</span>` : ''}
+                            ${answered ? '<span style="color: var(--info); margin-left: 15px;">ทำแล้ว</span>' : ''}
+                        </div>
+                        <button class="btn" onclick="takeQuiz(${lesson.id})"><i class="fas fa-play"></i> เริ่มทำข้อสอบ</button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function takeQuiz(lessonId) {
+            let quiz = lessonQuizzes[lessonId] || lessonQuizzes[1];
+            let contentDiv = document.getElementById('lessonContent');
+            let previousResult = quizResults[lessonId] || null;
+            
+            let questionsHtml = '';
+            quiz.questions.forEach((q, index) => {
+                let savedAnswer = previousResult && previousResult.answers ? previousResult.answers[index] : null;
+                questionsHtml += `
+                    <div class="quiz-question" id="q${index}">
+                        <p><strong>ข้อที่ ${index + 1}:</strong> ${q.text}</p>
+                        <div class="quiz-options">
+                            ${q.options.map((opt, optIndex) => `
+                                <label class="quiz-option">
+                                    <input type="radio" name="q${index}" value="${optIndex}" ${savedAnswer === optIndex ? 'checked' : ''}>
+                                    ${String.fromCharCode(65 + optIndex)}. ${opt}
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            contentDiv.innerHTML = `
+                <h2 style="color: var(--primary-blue);">แบบทดสอบบทที่ ${lessonId}</h2>
+                ${questionsHtml}
+                <div style="margin-top: 20px;">
+                    <button class="btn" onclick="submitQuiz(${lessonId})"><i class="fas fa-paper-plane"></i> ส่งคำตอบ</button>
+                    <button class="btn btn-warning" onclick="openLesson(${lessonId})"><i class="fas fa-arrow-left"></i> กลับไปบทเรียน</button>
+                </div>
+            `;
+            
+            document.getElementById('lessonsSection').style.display = 'none';
+            document.getElementById('quizSection').style.display = 'none';
+            document.getElementById('scoresSection').style.display = 'none';
+            contentDiv.style.display = 'block';
+        }
+
+        function submitQuiz(lessonId) {
+            if (!currentUser) {
+                alert('กรุณาเข้าสู่ระบบ');
+                return;
+            }
+            
+            let quiz = lessonQuizzes[lessonId] || lessonQuizzes[1];
+            let score = 0;
+            let answers = [];
+            let feedback = [];
+            
+            for (let i = 0; i < quiz.questions.length; i++) {
+                let selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected) {
+                    let answer = parseInt(selected.value);
+                    answers.push(answer);
+                    let isCorrect = (answer === quiz.questions[i].correct);
+                    if (isCorrect) {
+                        score += 2;
+                    }
+                    feedback.push({
+                        question: quiz.questions[i].text,
+                        selected: answer,
+                        correct: quiz.questions[i].correct,
+                        isCorrect: isCorrect,
+                        explanation: quiz.questions[i].explanation
+                    });
+                } else {
+                    alert('กรุณาตอบคำถามทุกข้อ');
+                    return;
+                }
+            }
+            
+            // Check if need to retake (score < 5)
+            let needsRetake = score < 5;
+            
+            quizScores[lessonId] = score;
+            quizAnswers[lessonId] = answers;
+            quizResults[lessonId] = {
+                score: score,
+                answers: answers,
+                feedback: feedback,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('quizScores', JSON.stringify(quizScores));
+            localStorage.setItem('quizAnswers', JSON.stringify(quizAnswers));
+            localStorage.setItem('quizResults', JSON.stringify(quizResults));
+            
+            // Generate feedback HTML
+            let feedbackHtml = '';
+            feedback.forEach((item, i) => {
+                let selectedLetter = String.fromCharCode(65 + item.selected);
+                let correctLetter = String.fromCharCode(65 + item.correct);
+                feedbackHtml += `
+                    <div class="quiz-feedback ${item.isCorrect ? 'feedback-correct' : 'feedback-incorrect'}">
+                        <p><strong>ข้อ ${i + 1}:</strong> ${item.question}</p>
+                        <p>คำตอบของคุณ: ${selectedLetter}. ${quiz.questions[i].options[item.selected]}</p>
+                        <p>คำตอบที่ถูกต้อง: ${correctLetter}. ${quiz.questions[i].options[item.correct]}</p>
+                        <p><em>คำอธิบาย: ${item.explanation}</em></p>
+                        ${!item.isCorrect ? '<p style="color: var(--danger);">❌ คำตอบผิด</p>' : '<p style="color: var(--success);">✅ คำตอบถูกต้อง</p>'}
+                    </div>
+                `;
+            });
+            
+            // Check overall score
+            let totalScore = Object.values(quizScores).reduce((a, b) => a + b, 0);
+            let overallNeedsRetake = (totalScore < 75) && (Object.keys(quizScores).length === 15); // 75/150 = ครึ่งหนึ่ง
+            
+            document.getElementById('lessonContent').innerHTML += `
+                <div class="score-display">
+                    <i class="fas fa-star"></i> คุณได้คะแนน: ${score} / 10 คะแนน
+                    <div style="font-size: 1rem; margin-top: 10px;">
+                        ${score >= 8 ? 'เก่งมาก!' : score >= 5 ? 'ผ่านเกณฑ์' : 'คะแนนต่ำกว่าเกณฑ์ (ต้องได้ 5 คะแนนขึ้นไป)'}
+                    </div>
+                </div>
+                <h3>ผลตรวจข้อสอบ:</h3>
+                ${feedbackHtml}
+                <div style="margin-top: 20px;">
+                    ${needsRetake ? 
+                        '<button class="btn btn-danger" onclick="takeQuiz(' + lessonId + ')"><i class="fas fa-redo"></i> ทำแบบทดสอบใหม่ (คะแนนไม่ผ่าน)</button>' : 
+                        '<button class="btn btn-success" onclick="openLesson(' + lessonId + ')"><i class="fas fa-check"></i> ผ่านแล้ว กลับไปบทเรียน</button>'}
+                    <button class="btn" onclick="showMainContent('scores')"><i class="fas fa-chart-line"></i> ดูคะแนนทั้งหมด</button>
+                </div>
+                ${overallNeedsRetake ? 
+                    '<div style="margin-top: 20px; padding: 20px; background: var(--danger); color: white; text-align: center;">⚠️ คะแนนรวมไม่ถึงครึ่ง กรุณาทบทวนบทเรียนและทำแบบทดสอบทุกบทใหม่</div>' : ''}
+            `;
+            
+            updateAccountDisplay();
+            renderLessons();
+            renderQuiz();
+        }
+
+        // ========== SCORES FUNCTION ==========
+        function renderScores() {
+            let container = document.getElementById('scoresContainer');
+            let html = '<h3>สรุปคะแนนแต่ละบทเรียน</h3>';
+            
+            let total = 0;
+            lessons.forEach(lesson => {
+                let score = quizScores[lesson.id] || 0;
+                total += score;
+                let grade = score >= 8 ? 'ดีมาก' : score >= 6 ? 'ดี' : score >= 5 ? 'ผ่าน' : 'ไม่ผ่าน';
+                let gradeColor = score >= 8 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)';
+                
+                let resultIcon = score >= 5 ? '✅' : '❌';
+                html += `
+                    <div style="margin: 10px 0; padding: 15px; background: white; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <span><strong>${lesson.title}</strong></span>
+                        <div>
+                            <span style="font-size: 1.2rem; font-weight: 700; color: ${gradeColor}; margin-right: 15px;">
+                                ${score} / 10
+                            </span>
+                            <span style="background: var(--primary-blue); color: white; padding: 5px 10px;">${grade} ${resultIcon}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            let average = total / 15;
+            let passedLessons = Object.values(quizScores).filter(s => s >= 5).length;
+            let overallStatus = total >= 75 ? '✅ ผ่านเกณฑ์' : '❌ ไม่ผ่านเกณฑ์ (ต้องได้ 75 คะแนนขึ้นไป)';
+            let overallGrade = total >= 120 ? 'ดีมาก' : total >= 90 ? 'ดี' : total >= 75 ? 'ผ่าน' : 'ไม่ผ่าน';
+            
+            html += `
+                <div style="margin-top: 30px; padding: 25px; background: var(--primary-blue); color: white;">
+                    <h3 style="font-size: 1.8rem;">คะแนนรวมทั้งหมด: ${total} / 150</h3>
+                    <p style="font-size: 1.2rem;">คะแนนเฉลี่ย: ${average.toFixed(2)}</p>
+                    <p style="font-size: 1.2rem;">จำนวนบทที่ผ่าน: ${passedLessons} / 15</p>
+                    <p style="font-size: 1.2rem;">ผลการเรียนโดยรวม: ${overallGrade}</p>
+                    <p style="font-size: 1.2rem; color: ${total >= 75 ? 'var(--success)' : 'var(--warning)'};">${overallStatus}</p>
+                </div>
+            `;
+            
+            if (total < 75 && Object.keys(quizScores).length === 15) {
+                html += `
+                    <div style="margin-top: 20px; padding: 20px; background: var(--danger); color: white; text-align: center;">
+                        <i class="fas fa-exclamation-triangle"></i> คุณยังไม่ผ่านเกณฑ์รวม กรุณากดปุ่มด้านล่างเพื่อทำแบบทดสอบใหม่ทุกบท
+                        <button class="btn btn-warning" style="margin-top: 10px;" onclick="resetAllQuizzes()"><i class="fas fa-redo-alt"></i> เริ่มทำแบบทดสอบทั้งหมดใหม่</button>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        function resetAllQuizzes() {
+            if (confirm('คุณแน่ใจหรือไม่ที่จะล้างคะแนนทั้งหมดและเริ่มทำแบบทดสอบใหม่?')) {
+                quizScores = {};
+                quizAnswers = {};
+                quizResults = {};
+                localStorage.setItem('quizScores', JSON.stringify(quizScores));
+                localStorage.setItem('quizAnswers', JSON.stringify(quizAnswers));
+                localStorage.setItem('quizResults', JSON.stringify(quizResults));
+                updateAccountDisplay();
+                renderScores();
+                alert('ล้างคะแนนเรียบร้อย กรุณาทำแบบทดสอบใหม่ทุกบท');
+            }
+        }
+
+        // Initialize
+        window.onload = function() {
+            renderLessons();
+            renderLessonList();
+            if (currentUser) updateAccountDisplay();
+            
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+                }
+            };
+        };
+    </script>
+</body>
+</html>
