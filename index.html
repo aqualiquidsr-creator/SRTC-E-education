@@ -317,49 +317,6 @@
             line-height: 1.6;
         }
 
-        .video-showcase {
-            background: var(--white);
-            border: 2px solid var(--primary-blue);
-            padding: 30px;
-            margin: 40px 0;
-        }
-
-        .video-showcase h3 {
-            font-size: 1.5rem;
-            color: var(--primary-blue);
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent-gold);
-        }
-
-        .video-grid-home {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        .video-card {
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            background: var(--bg-color);
-        }
-
-        .video-card iframe {
-            width: 100%;
-            height: 180px;
-            border: none;
-        }
-
-        .video-card h4 {
-            margin: 15px 0 10px;
-            color: var(--primary-blue);
-        }
-
-        .video-card p {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
         .howto-section {
             background: var(--white);
             border: 2px solid var(--primary-blue);
@@ -631,31 +588,6 @@
             border: 2px solid var(--primary-blue);
         }
 
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin: 25px 0;
-        }
-
-        .video-item {
-            border: 2px solid var(--primary-blue);
-            padding: 15px;
-            background: var(--bg-color);
-        }
-
-        .video-player {
-            width: 100%;
-            height: 160px;
-            border: none;
-        }
-
-        .video-title {
-            margin-top: 10px;
-            font-weight: 600;
-            text-align: center;
-        }
-
         /* Quiz Styles */
         .quiz-question {
             margin: 25px 0;
@@ -880,7 +812,7 @@
             .student-details {
                 grid-template-columns: repeat(2, 1fr);
             }
-            .feature-grid, .video-grid-home, .howto-steps, .stats-section {
+            .feature-grid, .howto-steps, .stats-section {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
@@ -893,13 +825,10 @@
             .nav-links {
                 flex-direction: column;
             }
-            .video-grid {
-                grid-template-columns: 1fr;
-            }
             .student-details {
                 grid-template-columns: 1fr;
             }
-            .feature-grid, .video-grid-home, .howto-steps, .stats-section {
+            .feature-grid, .howto-steps, .stats-section {
                 grid-template-columns: 1fr;
             }
         }
@@ -1045,42 +974,6 @@
                         <i class="fas fa-pencil-alt feature-icon"></i>
                         <h3>แบบทดสอบท้ายบท</h3>
                         <p>วัดความเข้าใจด้วยข้อสอบปรนัย 5 ข้อ พร้อมเฉลยและคำอธิบายทันทีที่ส่งคำตอบ</p>
-                    </div>
-                </div>
-
-                <div class="video-showcase">
-                    <h3><i class="fas fa-play-circle"></i> คลิปตัวอย่างสื่อการสอน</h3>
-                    <div class="video-grid-home">
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/HXV3zeQKqGY" title="ความรู้พื้นฐานฐานข้อมูล" allowfullscreen></iframe>
-                            <h4>ความรู้พื้นฐานฐานข้อมูล</h4>
-                            <p>เข้าใจความหมาย องค์ประกอบ และความสำคัญของฐานข้อมูล</p>
-                        </div>
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/7S_tz1z_5bA" title="ภาษา SQL เบื้องต้น" allowfullscreen></iframe>
-                            <h4>ภาษา SQL เบื้องต้น</h4>
-                            <p>เรียนรู้คำสั่ง SQL พื้นฐาน SELECT, INSERT, UPDATE, DELETE</p>
-                        </div>
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/z2kbsI8lLnE" title="Normalization" allowfullscreen></iframe>
-                            <h4>Normalization</h4>
-                            <p>การออกแบบฐานข้อมูลเพื่อลดความซ้ำซ้อน 1NF 2NF 3NF</p>
-                        </div>
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/j8yAUI9x7Pc" title="JOINS ใน SQL" allowfullscreen></iframe>
-                            <h4>JOINS ใน SQL</h4>
-                            <p>การเชื่อมโยงตารางด้วย INNER JOIN, LEFT JOIN, RIGHT JOIN</p>
-                        </div>
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/FxJwA_2pL4I" title="Transaction และ ACID" allowfullscreen></iframe>
-                            <h4>Transaction และ ACID</h4>
-                            <p>เข้าใจ Transaction และคุณสมบัติ ACID เพื่อความถูกต้องของข้อมูล</p>
-                        </div>
-                        <div class="video-card">
-                            <iframe src="https://www.youtube.com/embed/YSEn1pUq-6w" title="NoSQL และ MongoDB" allowfullscreen></iframe>
-                            <h4>NoSQL และ MongoDB</h4>
-                            <p>แนะนำฐานข้อมูลยุคใหม่ NoSQL และการทำงานกับ MongoDB</p>
-                        </div>
                     </div>
                 </div>
 
